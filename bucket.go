@@ -2,8 +2,10 @@ package simple_map
 
 import (
 	"encoding/json"
-	"github.com/zhenjl/cityhash"
 	"math"
+	"reflect"
+
+	"github.com/zhenjl/cityhash"
 )
 
 type element[KT, VT any] struct {
@@ -47,6 +49,16 @@ func (s *SMap[KT, VT]) unsafeGet(index int, k KT) (VT, bool) {
 }
 
 func (s *SMap[KT, VT]) hashIndex(k KT) int {
+	switch reflect.TypeOf(k).Kind() {
+	case reflect.Int:
+		return k.(int)
+	case reflect.Int8:
+		return int(k.(int8))
+	case reflect.Int32:
+		return int(k.(int32))
+	case reflect.Int64:
+		return int(k.(int64))
+	}
 	bs, _ := json.Marshal(k)
 	h := int(cityhash.CityHash64(bs, uint32(len(bs)))) % len(s.Bucket)
 	index := int(math.Abs(float64(h)))
