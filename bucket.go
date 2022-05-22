@@ -37,11 +37,11 @@ func (s *SMap[KT, VT]) unsafeSet(index int, k KT, v VT) {
 func (s *SMap[KT, VT]) unsafeGet(index int, k KT) (VT, bool) {
 	var dV VT
 	e := s.Bucket[index]
-	for e.k != k {
-		e = e.n
-	}
 	if e == nil {
 		return dV, false
+	}
+	for e.k != k {
+		e = e.n
 	}
 	return e.v, true
 }
