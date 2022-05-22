@@ -46,6 +46,24 @@ func (s *SMap[KT, VT]) unsafeGet(index int, k KT) (VT, bool) {
 	return e.v, true
 }
 
+func (s *SMap[KT, VT]) unsafeDelete(index int, k KT) {
+	if s.Bucket[index] == nil {
+		return
+	}
+	pre := s.Bucket[index]
+	current := pre.n
+	for current != nil && current.k != k {
+		pre = pre.n
+		current = current.n
+	}
+
+	if current == nil {
+		return
+	}
+
+	pre.n = current.n
+}
+
 func (s *SMap[KT, VT]) hashIndex(k KT) int {
 	bs, _ := json.Marshal(k)
 	h := int(cityhash.CityHash64(bs, uint32(len(bs)))) % len(s.Bucket)
