@@ -50,11 +50,11 @@ func (s *SMap[KT, VT]) unsafeDelete(index int, k KT) {
 	if s.Bucket[index] == nil {
 		return
 	}
-	pre := s.Bucket[index]
-	if pre.k == k {
-		pre = pre.n
+	if s.Bucket[index].k == k {
+		s.Bucket[index] = s.Bucket[index].n
 		return
 	}
+	pre := s.Bucket[index]
 	current := pre.n
 	for current != nil && current.k != k {
 		pre = pre.n
